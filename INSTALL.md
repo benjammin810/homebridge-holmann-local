@@ -1,10 +1,47 @@
-# Install Homebridge Holman Local 1.0.1
+# Setup from scratch: Homebridge Holman Local
 
-Use the **`.tgz` plugin archive** for installation. The source ZIP is for reviewing, modifying or hosting the project. Do not extract the `.tgz` before installing it.
+This guide covers the current manually configured plugin. **App pairing alone is not enough:** you must supply a device ID, local key and local IPv4 address. No previous Tuya plugin is required. The plugin has no built-in account login, QR-code setup, discovery or key retrieval.
 
-Have your own controller's device ID, reserved IPv4 address and 16-character local key ready. This package contains none of your credentials. It supports the Holman CLXW60 using Tuya 3.3 and Boolean DPS 20.
+## 1. Check your controller and Homebridge
 
-## Unraid with the official Homebridge Docker image
+- Supported device: **Holman CLXW60 Warm White Wi-Fi Garden Light Controller**, Tuya protocol 3.3, Boolean DPS 20 for power. Other models/firmware mappings are not covered.
+- Pair it using the manufacturer's instructions and confirm ON/OFF in its supported phone app. This guide does not establish that all Holman accounts/controllers work with Smart Life or Tuya Smart.
+- Have Homebridge running with access to its web interface and terminal. Package minimums are Homebridge 1.8+ or 2.x and Node.js 20+; use a Node version supported by your Homebridge release. Homebridge 2.x is declared compatible but not separately validated in this project.
+- If you do not have Homebridge yet, start with [the official Docker guide](https://github.com/homebridge/homebridge/wiki/Install-Homebridge-on-Docker) or [Homebridge on Unraid](https://github.com/homebridge/docker-homebridge/wiki/Homebridge-on-Unraid), then return here.
+
+The original plugin was physically reported working on Unraid with `homebridge/homebridge:ubuntu`; exact runtime and firmware versions were not recorded. The 1.0.1 community package was tested automatically, without a separate physical retest report.
+
+## 2. Find and reserve the local IP address
+
+Open your router's device/DHCP list, identify the controller and reserve its current IPv4 address. Router-specific screens vary. The Homebridge host or container must be able to reach that address over **TCP 6668**. Do not forward this port to the internet.
+
+This is the controller's IP, not the Unraid server address or the Homebridge web-interface address. A cloud API's returned IP may not be the LAN address. The plugin does not locate the controller automatically.
+
+## 3. Obtain the device ID and local key
+
+Use **[LOCAL-KEY.md](LOCAL-KEY.md)**. Choose one route:
+
+- Reuse credentials you already obtained for the same controller and current pairing.
+- Try the separately maintained app-authorised QR helper; it avoids a developer account according to its documentation but is **not tested here with CLXW60**.
+- Use the TinyTuya wizard with a Tuya developer project and authorised services.
+
+If your lights are only in the Holman app and no supported retrieval route works, **stop here**. We cannot promise that a Holman account can be linked or that moving apps is supported. Do not install expecting the plugin to generate a missing key.
+
+Proceed when you have all three:
+
+| Homebridge setting | Your value |
+| --- | --- |
+| `deviceId` | The controller's identifier |
+| `ip` | Its reserved local IPv4 address |
+| `localKey` | Its current 16-byte local secret |
+
+Keep the key private. Neither your app password nor a developer Access Secret belongs in `localKey`.
+
+## 4. Install, configure and test
+
+Download **homebridge-holman-local-1.0.1.tgz** from the [project's GitHub Releases](https://github.com/benjammin810/homebridge-holmann-local/releases) when available. Use the attached `.tgz`, not GitHub's automatically generated source ZIP. Leave it compressed. npm needs internet access for dependencies during installation.
+
+### Unraid with the official Homebridge Docker image
 
 These steps match the setup on which the original version was reported working: `homebridge/homebridge:ubuntu` with a persistent folder mapped to `/homebridge`.
 
@@ -25,7 +62,7 @@ These steps match the setup on which the original version was reported working: 
 7. Open Homebridge's web interface. Under **Plugins**, find **Homebridge Holman Local** and open **Settings**. Enter your name (for example, Garden Lights), device ID, reserved IPv4 address and local key.
 8. Save and restart Homebridge again.
 9. If the Homebridge bridge is already paired, find **Garden Lights** in Apple Home. It is an on/off Switch. If you have enabled a child bridge, pair that bridge using its QR code.
-10. Test ON and OFF and confirm the actual lights follow. Close old TinyTuya/Python scripts or competing local clients first.
+10. If Homebridge is not yet paired, use Apple Home → Add Accessory and scan the Homebridge pairing QR code shown in its web interface. Then test ON and OFF and confirm the actual lights follow. Close old TinyTuya/Python scripts or competing local clients first.
 
 The connection log should say:
 
@@ -33,11 +70,11 @@ The connection log should say:
 Connected to Holman controller over the local LAN.
 ```
 
-## Other Docker hosts
+### Other Docker hosts
 
 Use the same installation commands **inside the official Homebridge container**, with the archive copied to the host folder mapped to `/homebridge`. Other Docker images may use a different plugin directory; follow that image's documentation. Do not run the installation in your Docker host's unrelated Node environment.
 
-## Other Homebridge installations
+### Other Homebridge installations
 
 Open the terminal for the Node environment that runs Homebridge and copy the archive to that machine.
 

@@ -1,10 +1,6 @@
 # homebridge-holman-local
 
-Local Homebridge/Apple Home on/off control for Holmann CLXW60 garden lights through Homebridge. No Tuya cloud dependency! 
-
-After years of relying on Tuya Cloud to manage my at-home Holmann garden lights, I've created this via Codex to bring control back to the local network. This will hopefully allow those running Homebridge, and Holmann garden lights with the Warm White controller (commonly available at Bunnings across New Zealand and Australia) to bring control to Apple Home. 
-
-Please note, this is my first attempt at creating a Homebridge plugin, using Codex, and anything like this really - so feedback is very welcome.
+Local Homebridge/Apple Home on/off control for Holmann CLXW60 garden lights through Homebridge. No Tuya cloud dependency during normal operation! After years of relying on Tuya Cloud to manage my at-home Holmann garden lights, I've created this via Codex to bring control back to the local network. This will hopefully allow those running Homebridge, and Holmann garden lights with the Warm White controller (commonly available at Bunnings across New Zealand and Australia) to bring control to Apple Home. This is my first attempt at creating a Homebridge plugin, using Codex, and anything like this really - so feedback is very welcome.
 
 ## Plugin overview
 
@@ -41,19 +37,40 @@ Apple Home → Homebridge → local network → Holman CLXW60
 
 Requires Node.js 20 or newer **and a Node version supported by your Homebridge installation**, plus Homebridge 1.8+ or 2.x. Exact software and controller firmware versions from the successful physical installation were not recorded. This is an early community release, not a Homebridge-verified plugin or an official Holman integration.
 
-## Before installing
+## Prerequisites — read before installing
 
-Have the controller's **device ID, reserved local IPv4 address and existing 16-character local key** ready. Each user supplies their own values. No actual local key is included in this project.
+**This is a manually configured local-control plugin. It does not pair your lights, sign into your app, retrieve keys or offer a built-in QR setup flow.** Pairing in Holman/Tuya alone is not sufficient.
 
-The plugin does not discover, provision, pair or retrieve credentials for a controller. Initial device setup or obtaining a local key may require other tooling and the manufacturer's/Tuya ecosystem; the local-only claim applies to this plugin's normal operation once configured. See [TinyTuya's upstream documentation](https://github.com/jasonacox/tinytuya) for background on local keys and available tooling. Its optional cloud-based setup workflows are not dependencies of this plugin.
+You need:
 
-Keep a DHCP reservation for the controller and allow Homebridge to reach its local TCP port 6668. Do not port-forward that port to the internet. Close other local Tuya clients when testing, because some devices restrict simultaneous connections.
+1. A **Holman CLXW60 Warm White Wi-Fi controller**, already paired and working in its supported phone app, using the Tuya 3.3 / DPS 20 mapping covered by this release.
+2. **Homebridge 1.8+ or 2.x**, running with Node.js 20+ and a Node version supported by that Homebridge release. See the testing limits above.
+3. The controller's own **device ID and current 16-byte local key**.
+4. Its **reserved local IPv4 address**, reachable from Homebridge over TCP 6668.
+5. An Apple Home setup with Homebridge paired (or ready to pair), and access to install a local plugin archive in Homebridge's environment.
 
-## Installation
+No prior Tuya Homebridge plugin is required. The Homebridge plugin itself needs no Tuya developer account, API ID or API Secret. **Obtaining the local key is a separate prerequisite:**
 
-See **[INSTALL.md](INSTALL.md)** for step-by-step Docker/Unraid and other Homebridge installation instructions.
+| Credential route | Developer account? | Status |
+| --- | --- | --- |
+| Reuse your existing valid device ID/key | No | Supported by the current plugin |
+| Separate Smart Life/Tuya QR helper | No, according to that tool's documentation | Optional; not yet tested here with CLXW60 |
+| TinyTuya developer-cloud wizard | Yes | Documented upstream route requiring appropriate service access |
 
-This release is distributed as `homebridge-holman-local-1.0.1.tgz`. It has **not been published to npm**, so searching for its name in Homebridge is not the installation method yet. The archive contains compiled JavaScript: users do not need TypeScript or Python to install it. npm needs internet access to download the runtime dependencies during installation; subsequent control is local.
+Both retrieval routes can contact Tuya during setup. This is not a promise of cloud-free onboarding or guaranteed developer-account-free setup for every owner. Holman-app-only retrieval is unconfirmed. See [LOCAL-KEY.md](LOCAL-KEY.md) before resetting or changing app pairing.
+
+## Set up from scratch
+
+Follow **[INSTALL.md](INSTALL.md)** in order:
+
+1. Confirm the controller works in its supported app and that you have Homebridge available.
+2. Reserve its local IP in your router.
+3. Obtain your device ID and local key using [LOCAL-KEY.md](LOCAL-KEY.md).
+4. Install the release archive in the correct Homebridge environment.
+5. Enter the three device values, save and restart.
+6. Pair Homebridge with Apple Home if needed, then test physical ON and OFF.
+
+Download `homebridge-holman-local-1.0.1.tgz` from [GitHub Releases](https://github.com/benjammin810/homebridge-holmann-local/releases) once the release is published. This package has not been published to npm as part of this work; do not assume Homebridge's plugin search can find it. Built JavaScript is included, so Python/TypeScript are unnecessary for plugin installation. A separate key-retrieval tool may have its own requirements. Installation downloads runtime dependencies; normal plugin control then uses the LAN.
 
 ## Configuration
 
