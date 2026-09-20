@@ -1,0 +1,7 @@
+{
+  "accessory": "HolmanLocal",
+  "name": "Garden Lights",
+  "deviceId": "YOUR_DEVICE_ID",
+  "ip": "192.168.1.100",
+  "localKey": "REPLACE_WITH_YOUR_LOCAL_KEY"
+}

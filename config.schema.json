@@ -1,0 +1,45 @@
+{
+  "pluginAlias": "HolmanLocal",
+  "pluginType": "accessory",
+  "singular": true,
+  "headerDisplay": "Holman CLXW60: local on/off only (Tuya 3.3, DPS 20). Enter your local key here privately. No cloud account required.",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "title": "Name in Apple Home",
+        "type": "string",
+        "default": "Garden Lights",
+        "required": true
+      },
+      "deviceId": {
+        "title": "Device ID",
+        "type": "string",
+        "required": true,
+        "minLength": 1
+      },
+      "ip": {
+        "title": "Controller IPv4 address",
+        "type": "string",
+        "required": true,
+        "description": "The reserved local IPv4 address of your controller."
+      },
+      "localKey": {
+        "title": "Local key (private)",
+        "type": "string",
+        "required": true,
+        "minLength": 16,
+        "maxLength": 16
+      }
+    }
+  },
+  "layout": [
+    "name",
+    "deviceId",
+    "ip",
+    {
+      "key": "localKey",
+      "type": "password"
+    }
+  ]
+}

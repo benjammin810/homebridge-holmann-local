@@ -1,0 +1,56 @@
+{
+  "name": "homebridge-holman-local",
+  "version": "1.0.1",
+  "description": "Local on/off control for the Holman CLXW60 using Tuya 3.3 DPS 20",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "homebridge-plugin",
+    "homebridge",
+    "holman",
+    "tuya",
+    "local",
+    "transport-tcp",
+    "supports-hap"
+  ],
+  "engines": {
+    "node": ">=20",
+    "homebridge": "^1.8.0 || ^2.0.0"
+  },
+  "files": [
+    "dist",
+    "src",
+    "test",
+    "config.schema.json",
+    "config.example.json",
+    "tsconfig.json",
+    "README.md",
+    "LICENSE",
+    "pnpm-lock.yaml",
+    "CHANGELOG.md",
+    "INSTALL.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc && node --test test/*.test.cjs",
+    "prepack": "tsc"
+  },
+  "dependencies": {
+    "tuyapi": "7.7.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "homebridge": "^1.8.0",
+    "typescript": "^5.7.0"
+  },
+  "author": "benjammin810",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benjammin810/homebridge-holmann-local.git"
+  },
+  "homepage": "https://github.com/benjammin810/homebridge-holmann-local#readme",
+  "bugs": {
+    "url": "https://github.com/benjammin810/homebridge-holmann-local/issues"
+  }
+}
